@@ -1,0 +1,13 @@
+[System]
+language_index=15
+region_index=4
+language_index\default=false
+region_index\default=false
+
+[UI]
+Paths\language=zh-CN
+Paths\language\default=false
+
+[Miscellaneous]
+first_launch=false
+first_launch\default=false

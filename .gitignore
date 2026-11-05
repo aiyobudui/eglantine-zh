@@ -42,8 +42,12 @@ tls/
 _快速教程.txt
 nx2_switches.txt
 
-# 用户运行数据（NAND / 存档 / 缓存）不入库，仅保留配置文件
+# 用户运行数据（NAND / 存档 / 密钥 / 缓存）不入库
+# 真实配置 qt-config.ini 含 eden_token 等敏感与机器特定信息，严禁入库
 Game/user/*
 !Game/user/config/
 Game/user/config/*
 Game/user/config/qt-config.ini
+
+# 例外：脱敏的中文配置模板（供新环境使用，不会覆盖已有配置）
+!Game/user/config/qt-config.ini.zh-CN.example
