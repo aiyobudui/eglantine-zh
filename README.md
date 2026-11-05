@@ -13,7 +13,7 @@ Eglantine 是一款 Nintendo Switch 2 模拟器，基于 Eden / Yuzu / Sudachi �
 | 文件 / 目录 | 作用 |
 | --- | --- |
 | `Game/eglantine.exe` | 已打补丁的主程序：翻译加载路径从内置资源 `:/languages/` 改为等长的磁盘相对路径 `./languages/` |
-| `Game/languages/zh_CN.qm` | 简体中文翻译包，**2869 条**：应用界面 1935 条 + Qt 框架控件 934 条（确定/取消/文件对话框等） |
+| `Game/languages/zh_CN.qm` | 简体中文翻译包，**2864 条成品**：应用界面约 1930 条 + Qt 框架控件 934 条（确定/取消/文件对话框等） |
 | `Game/languages/zh-CN.qm` | 同一文件的连字符命名版，兼容不同加载方式 |
 | `Game/portable.txt` | 启用便携模式：配置写入 `Game/user/config/`，便于携带 |
 | `Game/user/config/qt-config.ini.zh-CN.example` | **脱敏的中文配置模板**，仅在新环境且尚无 `qt-config.ini` 时使用 |
@@ -47,6 +47,7 @@ translator.load(UISettings::values.language, QStringLiteral(":/languages/"));
 
 - **等长原地补丁**：把两处 `QStringLiteral` 字符串改为 `./languages/`（12 字符，对应原 `:/languages/`）和 `./languages`（11 字符，对应原 `:/languages`）。**必须等长**——`QStringLiteral` 在编译期把长度写死在数据头里，长度不匹配会让字符串带错误长度/嵌入空字符，补丁静默失效（本项目踩过这个坑）。PE 头与文件大小均不变。
 - **合并翻译包**：把应用 `zh_CN.ts` 与 Qt 框架 `qtbase_zh_CN.qm`（934 条）在 `.ts` 层合并后用官方 `lrelease` 编译，使一次加载即可覆盖应用界面与 Qt 标准控件。
+  > ⚠️ 合并脚本解析 `.ts` 时**必须先做 XML 反转义**（`&amp;`→`&`、`&quot;`→`"`）。否则 `<source>&amp;File</source>` 会被当成字面量 `&amp;File`，与 exe 中真实的 `&File` 永久失配——症状是游戏列表等不含 `&` 的部分正常中文，而顶部菜单 `File/Emulation/View/Tools/Multiplayer/Help` 始终英文（本项目踩过这个坑）。
 - **配置**：`[UI] Paths\language=zh-CN`（并置 `\default=false` 防止被重置），`first_launch=false`。
 
 原始未打补丁的 exe 备份为 `Game/eglantine.exe.preZhPatch.bak`（不在仓库内），供还原用。
