@@ -16,7 +16,8 @@ Eglantine 是一款 Nintendo Switch 2 模拟器，基于 Eden / Yuzu / Sudachi �
 | `Game/languages/zh_CN.qm` | 简体中文翻译包，**2864 条成品**：应用界面约 1930 条 + Qt 框架控件 934 条（确定/取消/文件对话框等） |
 | `Game/languages/zh-CN.qm` | 同一文件的连字符命名版，兼容不同加载方式 |
 | `Game/portable.txt` | 启用便携模式：配置写入 `Game/user/config/`，便于携带 |
-| `Game/user/config/qt-config.ini.zh-CN.example` | **脱敏的中文配置模板**，仅在新环境且尚无 `qt-config.ini` 时使用 |
+| `Game/user/config/qt-config.ini.zh-CN.example` | **脱敏的中文 + 相对路径配置模板**，仅在新环境且尚无 `qt-config.ini` 时使用 |
+| `启动模拟器.bat` | **推荐启动方式**：把工作目录锁定为 `Game/`，保证中文语言包与相对游戏目录都能解析 |
 | `README.md` / `.gitignore` | 说明与忽略规则 |
 
 > 仓库**不含**模拟器运行时（Qt6 等 DLL、插件）、游戏 ROM、密钥、固件，也不含真实的 `qt-config.ini`（其中有 `eden_token` 等敏感信息）。`room/` 目录已被忽略。
@@ -29,10 +30,31 @@ Eglantine 是一款 Nintendo Switch 2 模拟器，基于 Eden / Yuzu / Sudachi �
    - 中文系统下通常自动生效（加载器会先用 `QLocale()` 找 `./languages/zh_CN.qm`）；
    - 若仍为英文，且该目录**还没有** `Game/user/config/qt-config.ini`，把 `qt-config.ini.zh-CN.example` 复制并改名为 `qt-config.ini`；
    - 若已有自己的 `qt-config.ini`，**不要覆盖**，直接在「设置 → 界面 → 语言」选择简体中文即可。
-4. 通过**双击 `Game/eglantine.exe`** 启动（工作目录须为 `Game/`，便携模式与相对翻译路径才能正确解析；用快捷方式时请把「起始位置」设为 `Game/`）。
+4. **推荐双击根目录的 `启动模拟器.bat`** 启动（它会把工作目录锁定为 `Game/`）。也可直接双击 `Game/eglantine.exe`；若用快捷方式，必须把「起始位置」设为 `Game/`——**工作目录不对时，中文语言包和相对游戏目录都会失效**。
 5. **游戏内中文**：模板里 `language_index=15`（简体中文）、`region_index=4`（中国）。
 
 > ⚠️ 游戏 ROM、密钥、固件不在仓库内。密钥放 `Game/user/keys/prod.keys`、`title.keys`；固件 NCA 放 `Game/user/nand/system/Contents/registered/`。**密钥版本必须与固件版本匹配**（例如 22.5.0 密钥不能配 23.0.1 固件，否则日志会刷 `keys for gen 0x17+ required`）。
+
+## 可移植路径（打包给别人直接能玩）
+
+配置里的路径**全部是相对路径**，基准为工作目录 `Game/`：
+
+| 配置项 | 值 | 指向 |
+| --- | --- | --- |
+| `Paths\gamedirs\4\path` | `../room` | 与 `Game/` 同级的游戏目录 |
+| `Screenshots\screenshot_path` | `user/screenshots` | 截图 |
+| `nand_directory` / `sdmc_directory` / `load_directory` / `dump_directory` / `tas_directory` | `user/nand` 等 | 固件、密钥、存档 |
+| `Paths\recentFiles` | `../room/exefs/main` | 最近打开的游戏 |
+
+因此把整个 `eglantine-windows-x86_64/` 目录拷到**任何盘符、任何路径**，玩家用 `启动模拟器.bat` 打开就能直接看到游戏列表，**无需手动点「添加游戏目录」**。
+
+要求与调整：
+
+- 目录结构必须是 `eglantine-windows-x86_64/Game/` + `eglantine-windows-x86_64/room/`（游戏数据与 `Game/` 同级）。
+- **`room/` 不在仓库内**（约 25 万个松散文件），需单独拷贝；密钥与固件同理，见上方说明。
+- 若游戏目录改名或移动，只需改 `Paths\gamedirs\4\path` 一行。
+- 新机器若还没有 `qt-config.ini`，把 `qt-config.ini.zh-CN.example` 复制并改名即可——模板本身已采用相对路径。
+- 已验证：模拟器启动时会 `WriteToIni` 写回配置，**相对路径会被原样保留**，不会规范化成绝对路径。
 
 ## 工作原理
 
@@ -58,7 +80,9 @@ translator.load(UISettings::values.language, QStringLiteral(":/languages/"));
 git pull
 ```
 
-拉取最新汉化覆盖文件后重新双击 `Game/eglantine.exe` 即可。新机器先解压官方包，再 `git clone` 覆盖。
+拉取最新汉化覆盖文件后用 `启动模拟器.bat` 重新启动即可。新机器先解压官方包，再 `git clone` 覆盖。
+
+> 注意：真实的 `Game/user/config/qt-config.ini` 不入库（含机器相关设置与 `eden_token`），`git pull` **不会**覆盖你本机的路径与中文设置。
 
 ## 已知问题（与汉化无关）
 

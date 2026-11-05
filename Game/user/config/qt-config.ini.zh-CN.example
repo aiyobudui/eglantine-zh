@@ -1,3 +1,9 @@
+; 中文 + 相对路径配置模板（脱敏）。
+; 用法：仅在新环境且尚无 Game/user/config/qt-config.ini 时，
+;       把本文件复制为同目录下的 qt-config.ini。
+; 所有路径均相对于工作目录 Game/，必须用「启动模拟器.bat」启动
+; （或双击 Game/eglantine.exe），否则相对路径无法解析。
+
 [System]
 language_index=15
 region_index=4
@@ -8,6 +14,31 @@ region_index\default=false
 Paths\language=zh-CN
 Paths\language\default=false
 
+; 游戏目录：../room 指 eglantine-windows-x86_64/room（与 Game/ 同级）
+; 若游戏目录改名或放在别处，只需修改下面这一行。
+Paths\gamedirs\size=4
+Paths\gamedirs\1\path=SDMC
+Paths\gamedirs\2\path=UserNAND
+Paths\gamedirs\3\path=SysNAND
+Paths\gamedirs\4\path=../room
+Paths\gamedirs\4\deep_scan=false
+Paths\gamedirs\4\deep_scan\default=false
+Paths\gamedirs\4\expanded=true
+Paths\gamedirs\4\expanded\default=false
+Screenshots\screenshot_path=user/screenshots
+
 [Miscellaneous]
 first_launch=false
 first_launch\default=false
+
+[Data%20Storage]
+nand_directory=user/nand
+nand_directory\default=false
+sdmc_directory=user/sdmc
+sdmc_directory\default=false
+load_directory=user/load
+load_directory\default=false
+dump_directory=user/dump
+dump_directory\default=false
+tas_directory=user/tas
+tas_directory\default=false
