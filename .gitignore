@@ -1,0 +1,49 @@
+# ============================================================
+# Eglantine 中文汉化版仓库 - 忽略规则
+# 本仓库仅保存「中文汉化覆盖文件」，不保存游戏 ROM / 运行时 / 构建产物
+# ============================================================
+
+# 游戏数据（体积巨大，数十万文件）—— 务必忽略
+room/
+
+# 备份与临时工作目录
+*.bak
+_backup/
+_chk/
+
+# WorkBuddy 本地记忆（不入库）
+.workbuddy/
+
+# 日志
+*.log
+
+# 运行时 / 依赖库（用户从官方 build-212 包获取，不入库以保持精简）
+# 若需完整运行环境，请先解压官方包，再用本仓库文件覆盖
+Qt6*.dll
+lib*.dll
+d3dcompiler_47.dll
+dxcompiler.dll
+dxil.dll
+eden-cli.exe
+opengl32sw.dll
+zlib1.dll
+
+# 插件 / 平台目录（来自官方包）
+generic/
+iconengines/
+imageformats/
+networkinformation/
+platforms/
+plugins/
+styles/
+tls/
+
+# 其它官方附带文件
+_快速教程.txt
+nx2_switches.txt
+
+# 用户运行数据（NAND / 存档 / 缓存）不入库，仅保留配置文件
+Game/user/*
+!Game/user/config/
+Game/user/config/*
+Game/user/config/qt-config.ini
